@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
+import Footer from "@/components/layout/Footer";
  
 export default function DashboardLayout({
   children,
@@ -20,6 +21,7 @@ export default function DashboardLayout({
         <main className="p-6 overflow-y-auto">
           {children}
         </main>
+        <Footer />
       </div>
     </div>
   );

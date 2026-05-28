@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
  
 import Link from "next/link";
+import LogoutButton from "../ui/logoutButton";
  
 export default function Sidebar() {
   return (
@@ -16,7 +17,7 @@ export default function Sidebar() {
         EduFlow AI
       </div>
  
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-2 flex-1">
         <Link
           href="/dashboard"
           className="flex items-center gap-2 p-2 rounded hover:bg-gray-100"
@@ -57,7 +58,9 @@ export default function Sidebar() {
           <Sparkles size={18} />
           AI Generate
         </Link> */}
+        
       </nav>
+      <LogoutButton />
     </aside>
   );
 }
