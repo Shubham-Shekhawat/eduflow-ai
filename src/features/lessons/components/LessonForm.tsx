@@ -1,6 +1,6 @@
 "use client";
 
-import { Lesson , Unit } from "@prisma/client";
+import { Lesson, Unit } from "@prisma/client";
 
 import { useRouter } from "next/navigation";
 
@@ -29,7 +29,7 @@ interface Props {
 }
 
 
-export default function LessonForm({lesson, units, onSuccess }: Props) {
+export default function LessonForm({ lesson, units, onSuccess }: Props) {
   const isEdit = !!lesson;
 
   const router = useRouter();
@@ -41,46 +41,46 @@ export default function LessonForm({lesson, units, onSuccess }: Props) {
 
   // const [aiDuration, setAiDuration] = useState(45);
 
-  
-const {
-  register,
-  handleSubmit,
-  reset,
-  watch,
-  formState: { isSubmitting },
-} =   
-useForm<CreateLessonFormInput>({
-  resolver: zodResolver(createLessonSchema) as any,
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isSubmitting },
+  } =
+    useForm<CreateLessonFormInput>({
+      resolver: zodResolver(createLessonSchema) as any,
 
 
-  defaultValues: {
-    title: lesson?.title || "",
-    description: lesson?.description || "",
-    content: lesson?.content || "",
-    gradeLevel: lesson?.gradeLevel || "",
-    duration: lesson?.duration || 30,
+      defaultValues: {
+        title: lesson?.title || "",
+        description: lesson?.description || "",
+        content: lesson?.content || "",
+        gradeLevel: lesson?.gradeLevel || "",
+        duration: lesson?.duration || 30,
 
-    objectives: Array.isArray(lesson?.objectives)
-      ? lesson?.objectives.join(", ")
-      : "",
+        objectives: Array.isArray(lesson?.objectives)
+          ? lesson?.objectives.join(", ")
+          : "",
 
-    activities: Array.isArray(lesson?.activities)
-      ? lesson?.activities.join(", ")
-      : "",
+        activities: Array.isArray(lesson?.activities)
+          ? lesson?.activities.join(", ")
+          : "",
 
-    homework: lesson?.homework || "",
+        homework: lesson?.homework || "",
 
-    tags: Array.isArray(lesson?.tags)
-      ? lesson?.tags.join(", ")
-      : "",
+        tags: Array.isArray(lesson?.tags)
+          ? lesson?.tags.join(", ")
+          : "",
 
-    status: lesson?.status || "DRAFT",
+        status: lesson?.status || "DRAFT",
 
-    difficulty: lesson?.difficulty || "BEGINNER",
+        difficulty: lesson?.difficulty || "BEGINNER",
 
-    unitId: lesson?.unitId || "",
-  },
-});
+        unitId: lesson?.unitId || "",
+      },
+    });
 
 
   const watchedTitle = watch("title");
@@ -113,7 +113,7 @@ useForm<CreateLessonFormInput>({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pb-4">
+    <div className="space-y-4 pb-4">
       <input
         {...register("title")}
         placeholder="Lesson Title"
@@ -190,17 +190,17 @@ useForm<CreateLessonFormInput>({
       </div>
 
       <select
-  {...register("unitId", { required: true })}
-  className="w-full border p-2 rounded"
->
-  <option value="">Select Unit</option>
+        {...register("unitId", { required: true })}
+        className="w-full border p-2 rounded"
+      >
+        <option value="">Select Unit</option>
 
-  {units.map((unit) => (
-    <option key={unit.id} value={unit.id}>
-      {unit.title}
-    </option>
-  ))}
-</select>
+        {units.map((unit) => (
+          <option key={unit.id} value={unit.id}>
+            {unit.title}
+          </option>
+        ))}
+      </select>
 
       <button
         type="button"
@@ -238,7 +238,8 @@ useForm<CreateLessonFormInput>({
       </button>
 
       <button
-        type="submit"
+        type="button"
+        onClick={handleSubmit(onSubmit)}
         disabled={isSubmitting}
         className="bg-black text-white px-4 py-2 rounded"
       >
@@ -248,6 +249,6 @@ useForm<CreateLessonFormInput>({
             ? "Update Lesson"
             : "Create Lesson"}
       </button>
-    </form>
+    </div>
   );
 }

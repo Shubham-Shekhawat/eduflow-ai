@@ -17,7 +17,7 @@ export default function LoginPage() {
       password,
       redirect: true,
       callbackUrl:"/dashboard"
-    });
+    }); 
 
     setLoading(false);
 
