@@ -88,29 +88,28 @@ export default function LessonForm({ lesson, units, onSuccess }: Props) {
   const watchedDuration = watch("duration");
 
 
-  const onSubmit = async (data: CreateLessonFormInput) => {
-    const formData = new FormData();
+const onSubmit = async (
+  data: CreateLessonFormInput
+) => {
+  try {
+    if (lesson?.id) {
+      await updateLessonAction(
+        lesson.id,
+        data as any
+      );
+    } else {
+      await createLessonAction(data as any);
 
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, String(value ?? ""));
-    });
-
-    try {
-      if (lesson?.id) {
-        await updateLessonAction(lesson.id, formData);
-      } else {
-        await createLessonAction(formData);
-
-        reset();
-      }
-
-      router.refresh();
-
-      onSuccess?.();
-    } catch (error) {
-      console.error(error);
+      reset();
     }
-  };
+
+    router.refresh();
+
+    onSuccess?.();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className="space-y-4 pb-4">
