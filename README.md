@@ -8,6 +8,15 @@ Built with scalability, modular architecture, and production-level patterns in m
 
 ---
 
+for login:
+(email[password])
+Admin
+Admin@gmail.com[Admin]
+Teacher
+Shubham@gmail.com[Shubham]
+
+---
+
 🧠 Key Features
 
 🔐 Authentication & Authorization
