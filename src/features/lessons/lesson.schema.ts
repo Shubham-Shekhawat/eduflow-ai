@@ -1,61 +1,30 @@
 import { z } from "zod";
+import { LessonStatus , DifficultyLevel } from "@prisma/client";
 
 export const createLessonSchema = z.object({
   title: z.string().min(3),
 
-  description: z.string().optional(),
+  description: z.string().min(10),
 
-  content: z.string().min(10),
+  content: z.string().min(20),
 
   gradeLevel: z.string(),
 
   duration: z.coerce.number().min(1),
 
-  objectives: z
-    .string()
-    .transform((val) =>
-      val
-        .split(",")
-        .map((v) => v.trim())
-        .filter(Boolean)
-    ),
+  objectives: z.array(z.string()).optional(),
 
-  activities: z
-    .string()
-    .transform((val) =>
-      val
-        .split(",")
-        .map((v) => v.trim())
-        .filter(Boolean)
-    ),
+  activities: z.array(z.string()).optional(),
+
+  tags: z.array(z.string()).optional(),
 
   homework: z.string().optional(),
 
-  difficulty: z.enum([
-    "BEGINNER",
-    "INTERMEDIATE",
-    "ADVANCED",
-  ]),
+  status: z.nativeEnum(LessonStatus),
 
-  status: z.enum([
-    "DRAFT",
-    "PUBLISHED",
-    "ARCHIVED",
-  ]),
+  difficulty: z.nativeEnum(DifficultyLevel),
 
-  tags: z
-    .string()
-    .optional()
-    .transform((val) =>
-      val
-        ? val
-            .split(",")
-            .map((v) => v.trim())
-            .filter(Boolean)
-        : []
-    ),
-
-  unitId: z.string().min(1),
+  unitId: z.string(),
 });
 
 export const updateLessonSchema =
@@ -73,11 +42,23 @@ export type CreateLessonFormInput = {
   content: string;
   gradeLevel: string;
   duration: number;
-  objectives: string;
-  activities: string;
+
+  objectives: string[];
+  activities: string[];
+
   homework?: string;
-  difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  tags?: string;
+
+  difficulty:
+    | "BEGINNER"
+    | "INTERMEDIATE"
+    | "ADVANCED";
+
+  status:
+    | "DRAFT"
+    | "PUBLISHED"
+    | "ARCHIVED";
+
+  tags?: string[];
+
   unitId: string;
 };

@@ -11,8 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { generateLessonAction } from "../ai/actions/generate-lesson.action";
 
 import {
-  createLessonSchema,
-  CreateLessonInput,
+  createLessonFormSchema,
   CreateLessonFormInput,
 } from "../validators/create-lesson.schema";
 
@@ -50,7 +49,7 @@ export default function LessonForm({ lesson, units, onSuccess }: Props) {
     formState: { isSubmitting },
   } =
     useForm<CreateLessonFormInput>({
-      resolver: zodResolver(createLessonSchema) as any,
+      resolver: zodResolver(createLessonFormSchema) as any,
 
 
       defaultValues: {
@@ -88,28 +87,35 @@ export default function LessonForm({ lesson, units, onSuccess }: Props) {
   const watchedDuration = watch("duration");
 
 
-const onSubmit = async (
-  data: CreateLessonFormInput
-) => {
-  try {
-    if (lesson?.id) {
-      await updateLessonAction(
-        lesson.id,
-        data as any
-      );
-    } else {
-      await createLessonAction(data as any);
+  const onSubmit = async (
+    data: CreateLessonFormInput
+  ) => {
+    try {
 
-      reset();
+      console.log("SUBMIT DATA");
+      console.log(data);
+      console.log(typeof data.objectives);
+      console.log(typeof data.activities);
+      console.log(typeof data.tags);
+
+      if (lesson?.id) {
+        await updateLessonAction(
+          lesson.id,
+          data as any
+        );
+      } else {
+        await createLessonAction(data);
+
+        reset();
+      }
+
+      router.refresh();
+
+      onSuccess?.();
+    } catch (error) {
+      console.error(error);
     }
-
-    router.refresh();
-
-    onSuccess?.();
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   return (
     <div className="space-y-4 pb-4">
@@ -218,12 +224,19 @@ const onSubmit = async (
               ...result,
 
               gradeLevel: watchedGrade,
-
               duration: Number(watchedDuration),
 
-              objectives: result.objectives.join(", "),
+              objectives: Array.isArray(result.objectives)
+                ? result.objectives.join(", ")
+                : "",
 
-              activities: result.activities.join(", "),
+              activities: Array.isArray(result.activities)
+                ? result.activities.join(", ")
+                : "",
+
+              tags: Array.isArray(result.tags)
+                ? result.tags.join(", ")
+                : "",
             });
           } catch (error) {
             console.error(error);

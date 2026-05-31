@@ -3,42 +3,40 @@
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
-import { createLessonSchema } from "../validators/create-lesson.schema";
+import { createLessonFormSchema } from "../validators/create-lesson.schema";
+import {
+  createLessonSchema
+} from "../validators/create-lesson.schema";
 
 import { createLessonService } from "@/features/lessons/services/lesson.service";
 
 import { hasPermission } from "@/lib/rbac";
 
-export async function createLessonAction(
-  rawData: any
-) {
-  const session = await getServerSession(authOptions);
+export async function createLessonAction(rawData: any) {
+  try {
 
-  if (!session) {
-    throw new Error("Unauthorized");
+
+    console.log("RAW DATA", rawData);
+    const session = await getServerSession(authOptions);
+    console.log("Raw Data:", rawData);
+
+    console.log(createLessonFormSchema.shape.objectives);
+
+    const user = session?.user.id
+
+    const validatedData = 
+  createLessonSchema.parse(rawData);
+
+    console.log("Validated:", validatedData);
+
+    await createLessonService({
+      data: validatedData,
+      userId: session?.user.id || "asdfghjklwertyuiop",
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("CREATE LESSON ERROR:", error);
+    throw error;
   }
-
-  if (
-    !hasPermission(
-      session.user.role,
-      "lesson",
-      "create"
-    )
-  ) {
-    throw new Error("Forbidden");
-  }
-
-  console.log("Raw Data:", rawData);
-
-  const validatedData =
-    createLessonSchema.parse(rawData);
-
-  await createLessonService({
-    data: validatedData,
-    userId: session.user.id,
-  });
-
-  return {
-    success: true,
-  };
 }
